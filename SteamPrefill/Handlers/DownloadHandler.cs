@@ -31,6 +31,8 @@
             }
         }
 
+        private Random random = new Random();
+
         /// <summary>
         /// Attempts to download all queued requests.  If all downloads are successful, will return true.
         /// In the case of any failed downloads, the failed downloads will be retried up to 3 times.  If the downloads fail 3 times, then
@@ -49,19 +51,25 @@
 
             int retryCount = 0;
             var failedRequests = new ConcurrentBag<QueuedRequest>();
-            await _ansiConsole.CreateSpectreProgress(downloadArgs.TransferSpeedUnit).StartAsync(async ctx =>
-            {
-                // Run the initial download
-                failedRequests = await AttemptDownloadAsync(ctx, "Downloading..", queuedRequests, downloadArgs);
+            //TODO reenable
+            //await _ansiConsole.CreateSpectreProgress(downloadArgs.TransferSpeedUnit).StartAsync(async ctx =>
+            //{
+            //    // Run the initial download
+            //    failedRequests = await AttemptDownloadAsync(ctx, "Downloading..", queuedRequests, downloadArgs);
 
-                // Handle any failed requests
-                while (failedRequests.Any() && retryCount < 3)
-                {
-                    retryCount++;
-                    await Task.Delay(2000 * retryCount);
-                    failedRequests = await AttemptDownloadAsync(ctx, $"Retrying  {retryCount}..", failedRequests.ToList(), downloadArgs);
-                }
-            });
+            //    // Handle any failed requests
+            //    while (failedRequests.Any() && retryCount < 3)
+            //    {
+            //        retryCount++;
+            //        await Task.Delay(2000 * retryCount);
+            //        failedRequests = await AttemptDownloadAsync(ctx, $"Retrying  {retryCount}..", failedRequests.ToList(), downloadArgs);
+            //    }
+            //});
+
+            if (random.Next(0, 100) < 20)
+            {
+                failedRequests.Add(queuedRequests.First());
+            }
 
             // Handling final failed requests
             if (!failedRequests.Any())
@@ -69,7 +77,8 @@
                 return true;
             }
 
-            _ansiConsole.MarkupLine(Red($"{failedRequests.Count} failed downloads"));
+            _ansiConsole.LogMarkupError($"Download failed with {LightYellow(failedRequests.Count)} failed requests");
+            _ansiConsole.WriteLine();
             return false;
         }
 

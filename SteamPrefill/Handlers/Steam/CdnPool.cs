@@ -59,10 +59,6 @@ namespace SteamPrefill.Handlers.Steam
                 }
             });
 
-#if DEBUG
-            PrintDebugInfo();
-#endif
-
             if (retryCount == _maxRetries && AvailableServerEndpoints.Empty())
             {
                 throw new CdnExhaustionException("Request for Steam CDN servers timed out!");
@@ -125,28 +121,6 @@ namespace SteamPrefill.Handlers.Steam
         public void ReturnConnection(Server connection)
         {
             AvailableServerEndpoints.Push(connection);
-        }
-
-        private void PrintDebugInfo()
-        {
-            if (!AppConfig.VerboseLogs)
-            {
-                return;
-            }
-
-            // Prints out retrieved CDNs
-            var table = new Table().AddColumns("Total Results", "_availableServerEndpoints");
-            _ansiConsole.Live(table).Start(task =>
-            {
-                Grid serverGrid = new Grid().AddColumn();
-                foreach (Server s in AvailableServerEndpoints)
-                {
-                    serverGrid.AddRow($"{s.Type} {MediumPurple(s.Host)}".ToMarkup());
-                    task.Refresh();
-                }
-
-                table.AddRow(AvailableServerEndpoints.Count.ToMarkup(), serverGrid);
-            });
         }
     }
 }

@@ -12,7 +12,7 @@
         private readonly DepotHandler _depotHandler;
         private readonly AppInfoHandler _appInfoHandler;
 
-        private PrefillSummaryResult _prefillSummaryResult = new PrefillSummaryResult();
+        private readonly PrefillSummaryResult _prefillSummaryResult = new PrefillSummaryResult();
 
         public SteamManager(IAnsiConsole ansiConsole, DownloadArguments downloadArgs)
         {
@@ -161,23 +161,23 @@
             var downloadTimer = Stopwatch.StartNew();
             var totalBytes = ByteSize.FromBytes(chunkDownloadQueue.Sum(e => e.CompressedLength));
 
-            _ansiConsole.LogMarkup($"Downloading {Magenta(totalBytes.ToDecimalString())}");
-#if DEBUG
-            _ansiConsole.Markup($" from {LightYellow(chunkDownloadQueue.Count)} chunks");
-#endif
-            _ansiConsole.MarkupLine("");
+            var verboseChunkCount = AppConfig.VerboseLogs ? $"from {LightYellow(chunkDownloadQueue.Count)} chunks" : "";
+            _ansiConsole.LogMarkupLine($"Downloading {Magenta(totalBytes.ToDecimalString())} {verboseChunkCount}");
 
             var downloadSuccessful = await _downloadHandler.DownloadQueuedChunksAsync(chunkDownloadQueue, _downloadArgs);
             if (downloadSuccessful)
             {
+                // Logging some metrics about the download
+                _ansiConsole.LogMarkupLine($"Finished in {LightYellow(downloadTimer.FormatElapsedString())} - {Magenta(totalBytes.CalculateBitrate(downloadTimer))}");
+                _ansiConsole.WriteLine();
+
                 _depotHandler.MarkDownloadAsSuccessful(filteredDepots);
                 _prefillSummaryResult.Updated++;
             }
-            downloadTimer.Stop();
-
-            // Logging some metrics about the download
-            _ansiConsole.LogMarkupLine($"Finished in {LightYellow(downloadTimer.FormatElapsedString())} - {Magenta(totalBytes.CalculateBitrate(downloadTimer))}");
-            _ansiConsole.WriteLine();
+            else
+            {
+                _prefillSummaryResult.FailedApps++;
+            }
         }
 
         #endregion
