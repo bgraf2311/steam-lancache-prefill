@@ -36,6 +36,19 @@ Automatically fills a [Lancache](https://lancache.net/) with games from Steam, s
 | --- | --- | --- |
 | [<img src="docs/img/platforms/linux.png" height="100px" alt="Docker" />](https://tpill90.github.io/steam-lancache-prefill/install-guides/Install-Guide-For-Linux-Beginners/)    |  [<img src="docs/img/platforms/docker.webp" height="100px" alt="Docker" />](https://tpill90.github.io/steam-lancache-prefill/install-guides/Docker-Setup-Guide/)   |  [<img src="docs/img/platforms/unraid.png" height="100px" alt="unRAID" />](https://tpill90.github.io/steam-lancache-prefill/install-guides/Unraid-Setup-Guide/)   |
 
+<p float="left">
+    <a target="_blank" href="https://tpill90.github.io/steam-lancache-prefill/install-guides/Install-Guide-For-Linux-Beginners/"> 
+        <img src="docs/img/platforms/linux.png" height="100px" alt="Docker" />
+    </a>
+    <a target="_blank" href="https://tpill90.github.io/steam-lancache-prefill/install-guides/Docker-Setup-Guide/"> 
+        <img src="docs/img/platforms/docker.webp" height="100px" alt="Docker" />
+    </a>
+    <a target="_blank" href="https://tpill90.github.io/steam-lancache-prefill/install-guides/Unraid-Setup-Guide/"> 
+        <img src="docs/img/platforms/unraid.png" height="100px" alt="unRAID" />
+    </a>
+</p>
+
+
 
 1.  **SteamPrefill** can be run on both the Lancache server itself,  or on your gaming machine as an alternative Steam client.  You should decide which one works better for your use case.
 2.  Download the latest version for your OS from the [Releases](https://github.com/tpill90/steam-lancache-prefill/releases) page.
